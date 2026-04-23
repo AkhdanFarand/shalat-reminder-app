@@ -8,17 +8,151 @@ class SurahDetailPage extends StatelessWidget {
     required this.surahName,
   });
 
+  List<Map<String, String>> getVerses() {
+    if (surahName == "Al-Fatihah") {
+      return [
+        {
+          "arab":
+              "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+          "arti":
+              "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang."
+        },
+        {
+          "arab":
+              "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+          "arti":
+              "Segala puji bagi Allah, Tuhan semesta alam."
+        },
+        {
+          "arab":
+              "الرَّحْمَٰنِ الرَّحِيمِ",
+          "arti":
+              "Yang Maha Pengasih lagi Maha Penyayang."
+        },
+        {
+          "arab":
+              "مَالِكِ يَوْمِ الدِّينِ",
+          "arti":
+              "Pemilik hari Pembalasan."
+        },
+        {
+          "arab":
+              "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+          "arti":
+              "Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan."
+        },
+        {
+          "arab":
+              "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+          "arti":
+              "Tunjukilah kami jalan yang lurus."
+        },
+        {
+          "arab":
+              "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ",
+          "arti":
+              "Jalan orang-orang yang telah Engkau beri nikmat."
+        },
+      ];
+    }
+
+    if (surahName == "Al-Ikhlas") {
+      return [
+        {
+          "arab":
+              "قُلْ هُوَ اللَّهُ أَحَدٌ",
+          "arti":
+              "Katakanlah: Dialah Allah Yang Maha Esa."
+        },
+        {
+          "arab":
+              "اللَّهُ الصَّمَدُ",
+          "arti":
+              "Allah tempat meminta segala sesuatu."
+        },
+        {
+          "arab":
+              "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+          "arti":
+              "Dia tidak beranak dan tidak diperanakkan."
+        },
+        {
+          "arab":
+              "وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+          "arti":
+              "Dan tidak ada sesuatu yang setara dengan-Nya."
+        },
+      ];
+    }
+
+    if (surahName == "Al-Kafirun") {
+      return [
+        {
+          "arab":
+              "قُلْ يَا أَيُّهَا الْكَافِرُونَ",
+          "arti":
+              "Katakanlah: Wahai orang-orang kafir."
+        },
+        {
+          "arab":
+              "لَا أَعْبُدُ مَا تَعْبُدُونَ",
+          "arti":
+              "Aku tidak akan menyembah apa yang kamu sembah."
+        },
+        {
+          "arab":
+              "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ",
+          "arti":
+              "Dan kamu bukan penyembah apa yang aku sembah."
+        },
+        {
+          "arab":
+              "لَكُمْ دِينُكُمْ وَلِيَ دِينِ",
+          "arti":
+              "Untukmu agamamu dan untukku agamaku."
+        },
+      ];
+    }
+
+    return [
+      {
+        "arab":
+            "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ",
+        "arti":
+            "Ini adalah contoh isi dummy premium untuk $surahName."
+      },
+      {
+        "arab":
+            "اللَّهُ أَكْبَرُ",
+        "arti":
+            "Surah ini dapat diisi lengkap nanti."
+      },
+      {
+        "arab":
+            "لَا إِلٰهَ إِلَّا اللَّهُ",
+        "arti":
+            "Saat ini menggunakan data demo interaktif."
+      },
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final verses = getVerses();
+
     return Scaffold(
       backgroundColor:
-          const Color(0xffF8FAFC),
+          const Color(0xffF5EEDF),
 
       appBar: AppBar(
         backgroundColor:
-            Colors.white,
+            const Color(
+                0xffF5EEDF),
         elevation: 0,
-        centerTitle: true,
+        iconTheme:
+            const IconThemeData(
+          color: Colors.black,
+        ),
         title: Text(
           surahName,
           style:
@@ -28,254 +162,130 @@ class SurahDetailPage extends StatelessWidget {
                 FontWeight.w600,
           ),
         ),
-        iconTheme:
-            const IconThemeData(
-          color: Colors.black,
-        ),
-        actions: const [
-          Padding(
-            padding:
-                EdgeInsets.only(
-                    right: 14),
-            child: Icon(
-              Icons.more_vert,
-            ),
-          )
-        ],
       ),
 
       body: ListView(
         padding:
             const EdgeInsets.all(
-                16),
+                20),
         children: [
 
-          /// Header Card
           Container(
             padding:
-                const EdgeInsets.all(
-                    20),
+                const EdgeInsets.symmetric(
+              vertical: 18,
+            ),
             decoration:
                 BoxDecoration(
-              gradient:
-                  const LinearGradient(
-                colors: [
-                  Color(
-                      0xff16A34A),
-                  Color(
-                      0xff22C55E),
-                ],
+              border: Border.all(
+                color:
+                    Colors.black12,
               ),
               borderRadius:
-                  BorderRadius
-                      .circular(
-                          22),
+                  BorderRadius.circular(
+                      18),
             ),
-            child: Column(
-              children: [
-
-                Text(
-                  surahName,
-                  style:
-                      const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight:
-                        FontWeight
-                            .bold,
-                  ),
+            child: Center(
+              child: Text(
+                surahName,
+                style:
+                    const TextStyle(
+                  fontSize: 28,
+                  fontWeight:
+                      FontWeight.w600,
                 ),
+              ),
+            ),
+          ),
 
-                const SizedBox(
-                    height: 8),
+          const SizedBox(
+              height: 28),
 
-                const Text(
-                  "Makkiyah • 7 Ayat",
-                  style:
-                      TextStyle(
-                    color:
-                        Colors.white70,
-                  ),
-                ),
+          ...List.generate(
+            verses.length,
+            (index) {
+              final item =
+                  verses[index];
 
-                const SizedBox(
-                    height: 14),
+              return Container(
+                margin:
+                    const EdgeInsets.only(
+                        bottom:
+                            22),
 
-                const Divider(
+                padding:
+                    const EdgeInsets.all(
+                        18),
+
+                decoration:
+                    BoxDecoration(
                   color:
-                      Colors.white30,
+                      Colors.white,
+                  borderRadius:
+                      BorderRadius.circular(
+                          18),
                 ),
 
-                const SizedBox(
-                    height: 10),
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment
+                          .start,
 
-                const Text(
-                  "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-                  textAlign:
-                      TextAlign.center,
-                  style:
-                      TextStyle(
-                    color:
-                        Colors.white,
-                    fontSize: 26,
-                  ),
+                  children: [
+
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor:
+                          const Color(
+                              0xffDCFCE7),
+                      child: Text(
+                        "${index + 1}",
+                        style:
+                            const TextStyle(
+                          color: Color(
+                              0xff16A34A),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(
+                        height:
+                            16),
+
+                    Text(
+                      item["arab"]!,
+                      textAlign:
+                          TextAlign
+                              .right,
+                      style:
+                          const TextStyle(
+                        fontSize:
+                            28,
+                        height:
+                            1.8,
+                      ),
+                    ),
+
+                    const SizedBox(
+                        height:
+                            14),
+
+                    Text(
+                      item["arti"]!,
+                      style:
+                          const TextStyle(
+                        fontSize:
+                            16,
+                        color: Colors
+                            .black54,
+                        height:
+                            1.5,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-
-          const SizedBox(
-              height: 20),
-
-          ayatItem(
-            no: "1",
-            arab:
-                "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-            arti:
-                "Segala puji bagi Allah, Tuhan seluruh alam.",
-          ),
-
-          ayatItem(
-            no: "2",
-            arab:
-                "الرَّحْمَٰنِ الرَّحِيمِ",
-            arti:
-                "Yang Maha Pengasih, Maha Penyayang.",
-          ),
-
-          ayatItem(
-            no: "3",
-            arab:
-                "مَالِكِ يَوْمِ الدِّينِ",
-            arti:
-                "Pemilik hari pembalasan.",
-          ),
-
-          ayatItem(
-            no: "4",
-            arab:
-                "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
-            arti:
-                "Hanya kepada Engkaulah kami menyembah dan meminta pertolongan.",
-          ),
-
-          ayatItem(
-            no: "5",
-            arab:
-                "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
-            arti:
-                "Tunjukilah kami jalan yang lurus.",
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget ayatItem({
-    required String no,
-    required String arab,
-    required String arti,
-  }) {
-    return Container(
-      margin:
-          const EdgeInsets.only(
-              bottom: 16),
-      padding:
-          const EdgeInsets.all(
-              16),
-      decoration:
-          BoxDecoration(
-        color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(
-                18),
-      ),
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment
-                .start,
-        children: [
-
-          Row(
-            mainAxisAlignment:
-                MainAxisAlignment
-                    .spaceBetween,
-            children: [
-
-              CircleAvatar(
-                radius: 16,
-                backgroundColor:
-                    const Color(
-                        0xffE8F5EC),
-                child: Text(
-                  no,
-                  style:
-                      const TextStyle(
-                    color: Color(
-                        0xff16A34A),
-                    fontWeight:
-                        FontWeight
-                            .bold,
-                  ),
-                ),
-              ),
-
-              Row(
-                children: const [
-
-                  Icon(
-                    Icons
-                        .play_circle_outline,
-                    color: Color(
-                        0xff16A34A),
-                  ),
-
-                  SizedBox(
-                      width: 12),
-
-                  Icon(
-                    Icons
-                        .favorite_border,
-                    color:
-                        Colors.grey,
-                  ),
-                ],
-              )
-            ],
-          ),
-
-          const SizedBox(
-              height: 16),
-
-          Align(
-            alignment:
-                Alignment
-                    .centerRight,
-            child: Text(
-              arab,
-              textAlign:
-                  TextAlign.right,
-              style:
-                  const TextStyle(
-                fontSize: 28,
-                height: 1.8,
-                fontWeight:
-                    FontWeight.w500,
-              ),
-            ),
-          ),
-
-          const SizedBox(
-              height: 14),
-
-          Text(
-            arti,
-            style:
-                const TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-              height: 1.5,
-            ),
+              );
+            },
           ),
         ],
       ),

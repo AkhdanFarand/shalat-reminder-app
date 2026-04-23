@@ -13,101 +13,115 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState
     extends State<NavigationPage> {
+  int _selectedIndex = 0;
 
-  int currentIndex = 0;
-
-  final pages = const [
+  final List<Widget> _pages = const [
     HomePage(),
     PrayerPage(),
     ProfilePage(),
   ];
 
+  void _onTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color(0xffF8FAFC),
+      body: _pages[_selectedIndex],
 
-      body: pages[currentIndex],
+      bottomNavigationBar: SafeArea(
+        minimum:
+            const EdgeInsets.only(
+                bottom: 8),
 
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(16),
-        padding:
-            const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 8,
-        ),
+        child: Container(
+          margin:
+              const EdgeInsets.fromLTRB(
+            18,
+            0,
+            18,
+            24,
+          ),
 
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius:
-              BorderRadius.circular(
-                  24),
+          padding:
+              const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
 
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black
-                  .withOpacity(0.06),
-              blurRadius: 18,
-              offset:
-                  const Offset(0, 8),
-            ),
-          ],
-        ),
+          decoration: BoxDecoration(
+            color: Colors.white,
 
-        child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceAround,
+            borderRadius:
+                BorderRadius.circular(
+                    28),
 
-          children: [
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black
+                    .withOpacity(0.08),
+                blurRadius: 24,
+                offset:
+                    const Offset(
+                        0, 10),
+              ),
+            ],
+          ),
 
-            navItem(
-              Icons.home,
-              "Home",
-              0,
-            ),
+          child: Row(
+            mainAxisAlignment:
+                MainAxisAlignment
+                    .spaceAround,
 
-            navItem(
-              Icons.access_time,
-              "Prayer",
-              1,
-            ),
+            children: [
+              navItem(
+                icon: Icons.home,
+                label: "Home",
+                index: 0,
+              ),
 
-            navItem(
-              Icons.person,
-              "Me",
-              2,
-            ),
-          ],
+              navItem(
+                icon:
+                    Icons.access_time,
+                label: "Prayer",
+                index: 1,
+              ),
+
+              navItem(
+                icon: Icons.person,
+                label: "Profile",
+                index: 2,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget navItem(
-    IconData icon,
-    String label,
-    int index,
-  ) {
+  Widget navItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
     bool active =
-        currentIndex == index;
+        _selectedIndex == index;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          currentIndex = index;
-        });
-      },
+      onTap: () => _onTap(index),
 
       child: AnimatedContainer(
         duration:
             const Duration(
-                milliseconds: 250),
+                milliseconds:
+                    250),
 
         padding:
             const EdgeInsets.symmetric(
-          horizontal: 18,
+          horizontal: 16,
           vertical: 10,
         ),
 
@@ -115,7 +129,8 @@ class _NavigationPageState
           color: active
               ? const Color(
                   0xffDCFCE7)
-              : Colors.transparent,
+              : Colors
+                  .transparent,
 
           borderRadius:
               BorderRadius.circular(
@@ -124,31 +139,31 @@ class _NavigationPageState
 
         child: Row(
           children: [
-
             Icon(
               icon,
+              size: 22,
               color: active
                   ? const Color(
                       0xff16A34A)
                   : Colors.grey,
             ),
 
-            if (active)
-              Padding(
-                padding:
-                    const EdgeInsets.only(
-                        left: 8),
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    color: Color(
-                        0xff16A34A),
-                    fontWeight:
-                        FontWeight
-                            .w600,
-                  ),
+            if (active) ...[
+              const SizedBox(
+                  width: 8),
+
+              Text(
+                label,
+                style:
+                    const TextStyle(
+                  color: Color(
+                      0xff16A34A),
+                  fontWeight:
+                      FontWeight
+                          .w700,
                 ),
               ),
+            ],
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'quran_page.dart';
 
 class PrayerPage extends StatefulWidget {
   const PrayerPage({super.key});
@@ -48,8 +49,7 @@ class _PrayerPageState extends State<PrayerPage> {
     super.dispose();
   }
 
-  String two(int n) =>
-      n.toString().padLeft(2, '0');
+  String two(int n) => n.toString().padLeft(2, '0');
 
   MapEntry<String, String> nextPrayer() {
     for (var item in prayers.entries) {
@@ -84,16 +84,23 @@ class _PrayerPageState extends State<PrayerPage> {
     );
 
     if (now.isAfter(target)) {
-      target =
-          target.add(const Duration(days: 1));
+      target = target.add(const Duration(days: 1));
     }
 
     final diff = target.difference(now);
 
-    return
-        "${two(diff.inHours)}:"
+    return "${two(diff.inHours)}:"
         "${two(diff.inMinutes.remainder(60))}:"
         "${two(diff.inSeconds.remainder(60))}";
+  }
+
+  void openQuran() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const QuranPage(),
+      ),
+    );
   }
 
   @override
@@ -103,23 +110,17 @@ class _PrayerPageState extends State<PrayerPage> {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding:
-              const EdgeInsets.all(20),
-
+          padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
-
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const SizedBox(height: 8),
 
               const Text(
                 "Prayer",
                 style: TextStyle(
                   fontSize: 30,
-                  fontWeight:
-                      FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                   color: Color(0xff0F172A),
                 ),
               ),
@@ -136,75 +137,54 @@ class _PrayerPageState extends State<PrayerPage> {
 
               const SizedBox(height: 24),
 
-              // GREEN CARD
+              // CARD
               Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.all(24),
-
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  gradient:
-                      const LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [
                       Color(0xff16A34A),
                       Color(0xff22C55E),
                     ],
                   ),
-
-                  borderRadius:
-                      BorderRadius.circular(
-                          28),
+                  borderRadius: BorderRadius.circular(28),
                 ),
-
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
-
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     const Text(
                       "Next Prayer",
                       style: TextStyle(
-                        color:
-                            Colors.white70,
+                        color: Colors.white70,
                       ),
                     ),
 
-                    const SizedBox(
-                        height: 12),
+                    const SizedBox(height: 12),
 
                     Text(
                       next.key,
-                      style:
-                          const TextStyle(
-                        color:
-                            Colors.white,
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 18,
                       ),
                     ),
 
                     Text(
                       next.value,
-                      style:
-                          const TextStyle(
-                        color:
-                            Colors.white,
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 52,
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(
-                        height: 8),
+                    const SizedBox(height: 8),
 
                     Text(
                       "Remaining : ${remainingTime()}",
-                      style:
-                          const TextStyle(
-                        color:
-                            Colors.white,
+                      style: const TextStyle(
+                        color: Colors.white,
                       ),
                     ),
                   ],
@@ -217,8 +197,7 @@ class _PrayerPageState extends State<PrayerPage> {
                 "Prayer Times",
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight:
-                      FontWeight.w700,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
 
@@ -232,8 +211,7 @@ class _PrayerPageState extends State<PrayerPage> {
                 "Feature Tools",
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight:
-                      FontWeight.w700,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
 
@@ -241,33 +219,31 @@ class _PrayerPageState extends State<PrayerPage> {
 
               GridView.count(
                 shrinkWrap: true,
-                physics:
-                    const NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 14,
                 mainAxisSpacing: 14,
                 childAspectRatio: 1.25,
-
-                children: const [
-
+                children: [
                   QuickBox(
-                    Icons.menu_book,
-                    "Quran",
+                    icon: Icons.menu_book,
+                    title: "Quran",
+                    onTap: openQuran,
                   ),
 
-                  QuickBox(
-                    Icons.bar_chart,
-                    "Tracker",
+                  const QuickBox(
+                    icon: Icons.bar_chart,
+                    title: "Tracker",
                   ),
 
-                  QuickBox(
-                    Icons.explore,
-                    "Qibla",
+                  const QuickBox(
+                    icon: Icons.explore,
+                    title: "Qibla",
                   ),
 
-                  QuickBox(
-                    Icons.location_on,
-                    "Mosques",
+                  const QuickBox(
+                    icon: Icons.location_on,
+                    title: "Mosques",
                   ),
                 ],
               ),
@@ -282,143 +258,91 @@ class _PrayerPageState extends State<PrayerPage> {
 
   Widget prayerList() {
     return Container(
-      padding:
-          const EdgeInsets.all(18),
-
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(
-                24),
-
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black
-                .withOpacity(0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 12,
-            offset:
-                const Offset(0, 8),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
-
       child: Column(
         children: prayers.entries.map((e) {
-
-          bool active =
-              e.key == nextPrayer().key;
+          bool active = e.key == nextPrayer().key;
 
           IconData icon =
-              (e.key ==
-                          "Maghrib" ||
-                      e.key ==
-                          "Isya")
-                  ? Icons
-                      .nightlight_round
+              (e.key == "Maghrib" || e.key == "Isya")
+                  ? Icons.nightlight_round
                   : Icons.wb_sunny;
 
           return Container(
-            margin:
-                const EdgeInsets.only(
-                    bottom: 10),
-
-            padding:
-                const EdgeInsets.all(
-                    14),
-
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: active
-                  ? const Color(
-                      0xffDCFCE7)
-                  : const Color(
-                      0xffF8FAFC),
-
-              borderRadius:
-                  BorderRadius.circular(
-                      16),
+                  ? const Color(0xffDCFCE7)
+                  : const Color(0xffF8FAFC),
+              borderRadius: BorderRadius.circular(16),
             ),
-
             child: Row(
               children: [
-
                 Icon(
                   icon,
                   size: 20,
-                  color:
-                      const Color(
-                          0xff16A34A),
+                  color: const Color(0xff16A34A),
                 ),
 
-                const SizedBox(
-                    width: 12),
+                const SizedBox(width: 12),
 
                 Expanded(
                   child: Text(
                     e.key,
-                    style:
-                        const TextStyle(
-                      fontWeight:
-                          FontWeight
-                              .w600,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
 
                 Text(
                   e.value,
-                  style:
-                      const TextStyle(
-                    fontWeight:
-                        FontWeight.w600,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
 
-                const SizedBox(
-                    width: 12),
+                const SizedBox(width: 12),
 
                 GestureDetector(
                   onTap: () {
                     setState(() {
                       checked[e.key] =
-                          !(checked[e.key] ??
-                              false);
+                          !(checked[e.key] ?? false);
                     });
                   },
-
                   child: Container(
                     width: 24,
                     height: 24,
-
-                    decoration:
-                        BoxDecoration(
-                      color:
-                          checked[e.key] ==
-                                  true
-                              ? const Color(
-                                  0xff16A34A)
-                              : Colors.white,
-
+                    decoration: BoxDecoration(
+                      color: checked[e.key] == true
+                          ? const Color(0xff16A34A)
+                          : Colors.white,
                       borderRadius:
-                          BorderRadius.circular(
-                              8),
-
+                          BorderRadius.circular(8),
                       border: Border.all(
-                        color: checked[e.key] ==
-                                true
-                            ? const Color(
-                                0xff16A34A)
-                            : Colors.grey
-                                .shade400,
+                        color: checked[e.key] == true
+                            ? const Color(0xff16A34A)
+                            : Colors.grey.shade400,
                       ),
                     ),
-
-                    child: checked[e.key] ==
-                            true
+                    child: checked[e.key] == true
                         ? const Icon(
                             Icons.check,
                             size: 16,
-                            color:
-                                Colors.white,
+                            color: Colors.white,
                           )
                         : null,
                   ),
@@ -435,72 +359,58 @@ class _PrayerPageState extends State<PrayerPage> {
 class QuickBox extends StatelessWidget {
   final IconData icon;
   final String title;
+  final VoidCallback? onTap;
 
-  const QuickBox(
-    this.icon,
-    this.title, {
+  const QuickBox({
     super.key,
+    required this.icon,
+    required this.title,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(
-                22),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black
-                .withOpacity(0.04),
-            blurRadius: 10,
-            offset:
-                const Offset(0, 6),
-          ),
-        ],
-      ),
-
-      child: Column(
-        mainAxisAlignment:
-            MainAxisAlignment.center,
-
-        children: [
-
-          Container(
-            padding:
-                const EdgeInsets.all(
-                    14),
-
-            decoration: BoxDecoration(
-              color:
-                  const Color(
-                      0xffDCFCE7),
-              borderRadius:
-                  BorderRadius.circular(
-                      16),
+    return InkWell(
+      borderRadius: BorderRadius.circular(22),
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xffDCFCE7),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                icon,
+                size: 28,
+                color: const Color(0xff16A34A),
+              ),
             ),
 
-            child: Icon(
-              icon,
-              size: 28,
-              color:
-                  const Color(
-                      0xff16A34A),
-            ),
-          ),
+            const SizedBox(height: 10),
 
-          const SizedBox(height: 10),
-
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight:
-                  FontWeight.w600,
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

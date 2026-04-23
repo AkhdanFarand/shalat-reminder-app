@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'surah_detail_page.dart';
 
 class QuranPage extends StatefulWidget {
   const QuranPage({super.key});
@@ -42,6 +43,12 @@ class _QuranPageState extends State<QuranPage>
       "type": "Medinan",
       "ayah": "120 Ayahs"
     },
+    {
+      "no": "6",
+      "name": "Al-An'am",
+      "type": "Meccan",
+      "ayah": "165 Ayahs"
+    },
   ];
 
   final List<Map<String, String>> juzList = [
@@ -70,7 +77,6 @@ class _QuranPageState extends State<QuranPage>
   @override
   void initState() {
     super.initState();
-
     _tabController =
         TabController(length: 3, vsync: this);
   }
@@ -85,8 +91,8 @@ class _QuranPageState extends State<QuranPage>
     return Container(
       width: 34,
       height: 34,
-      decoration: BoxDecoration(
-        color: const Color(0xffE8F5EC),
+      decoration: const BoxDecoration(
+        color: Color(0xffE8F5EC),
         shape: BoxShape.circle,
       ),
       child: Center(
@@ -101,67 +107,107 @@ class _QuranPageState extends State<QuranPage>
     );
   }
 
-  Widget surahItem(Map<String, String> item) {
-    return ListTile(
-      contentPadding:
-          const EdgeInsets.symmetric(
-        horizontal: 0,
-        vertical: 2,
-      ),
-      leading: buildCircleNumber(item["no"]!),
-      title: Text(
-        item["name"]!,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
+  Widget surahItem(
+      BuildContext context,
+      Map<String, String> item) {
+    return InkWell(
+      borderRadius:
+          BorderRadius.circular(18),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                SurahDetailPage(
+              surahName:
+                  item["name"]!,
+            ),
+          ),
+        );
+      },
+      child: ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(
+          horizontal: 0,
+          vertical: 2,
         ),
-      ),
-      subtitle: Text(
-        "${item["type"]} • ${item["ayah"]}",
-        style: const TextStyle(
-          fontSize: 12,
+        leading:
+            buildCircleNumber(item["no"]!),
+        title: Text(
+          item["name"]!,
+          style: const TextStyle(
+            fontWeight:
+                FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          "${item["type"]} • ${item["ayah"]}",
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+          ),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
           color: Colors.grey,
         ),
-      ),
-      trailing: const Icon(
-        Icons.chevron_right,
-        color: Colors.grey,
       ),
     );
   }
 
-  Widget juzItem(Map<String, String> item) {
-    return ListTile(
-      contentPadding:
-          const EdgeInsets.symmetric(
-        horizontal: 0,
-      ),
-      leading: buildCircleNumber(item["no"]!),
-      title: Text(
-        item["title"]!,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
+  Widget juzItem(
+      BuildContext context,
+      Map<String, String> item) {
+    return InkWell(
+      borderRadius:
+          BorderRadius.circular(18),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                SurahDetailPage(
+              surahName:
+                  item["title"]!,
+            ),
+          ),
+        );
+      },
+      child: ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(
+          horizontal: 0,
         ),
-      ),
-      subtitle: Text(
-        item["desc"]!,
-        style: const TextStyle(
+        leading:
+            buildCircleNumber(item["no"]!),
+        title: Text(
+          item["title"]!,
+          style: const TextStyle(
+            fontWeight:
+                FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          item["desc"]!,
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 12,
+          ),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
           color: Colors.grey,
-          fontSize: 12,
         ),
-      ),
-      trailing: const Icon(
-        Icons.chevron_right,
-        color: Colors.grey,
       ),
     );
   }
 
   Widget favouriteEmpty() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment:
             MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(
             Icons.favorite_border,
             size: 60,
@@ -171,7 +217,8 @@ class _QuranPageState extends State<QuranPage>
           Text(
             "No favourites yet",
             style: TextStyle(
-              fontWeight: FontWeight.w600,
+              fontWeight:
+                  FontWeight.w600,
             ),
           ),
           SizedBox(height: 6),
@@ -182,6 +229,16 @@ class _QuranPageState extends State<QuranPage>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void openSearch() {
+    showSearch(
+      context: context,
+      delegate:
+          QuranSearchDelegate(
+        surahList,
       ),
     );
   }
@@ -199,7 +256,8 @@ class _QuranPageState extends State<QuranPage>
           "Quran",
           style: TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.w600,
+            fontWeight:
+                FontWeight.w600,
           ),
         ),
         centerTitle: true,
@@ -207,11 +265,11 @@ class _QuranPageState extends State<QuranPage>
             const IconThemeData(
           color: Colors.black,
         ),
-        actions: const [
-          Padding(
-            padding:
-                EdgeInsets.only(right: 14),
-            child: Icon(Icons.search),
+        actions: [
+          IconButton(
+            onPressed: openSearch,
+            icon:
+                const Icon(Icons.search),
           ),
         ],
         bottom: TabBar(
@@ -237,17 +295,19 @@ class _QuranPageState extends State<QuranPage>
           /// SURAH
           Padding(
             padding:
-                const EdgeInsets.all(16),
+                const EdgeInsets.all(
+                    16),
             child: ListView(
               children: [
 
                 Container(
                   padding:
-                      const EdgeInsets.all(
-                          16),
+                      const EdgeInsets
+                          .all(16),
                   decoration:
                       BoxDecoration(
-                    color: Colors.white,
+                    color:
+                        Colors.white,
                     borderRadius:
                         BorderRadius
                             .circular(
@@ -279,7 +339,8 @@ class _QuranPageState extends State<QuranPage>
                             style:
                                 TextStyle(
                               color:
-                                  Colors.grey,
+                                  Colors
+                                      .grey,
                               fontSize:
                                   12,
                             ),
@@ -287,7 +348,8 @@ class _QuranPageState extends State<QuranPage>
                         ],
                       ),
                       Icon(
-                        Icons.menu_book,
+                        Icons
+                            .menu_book,
                         color: Color(
                             0xff16A34A),
                       )
@@ -298,12 +360,12 @@ class _QuranPageState extends State<QuranPage>
                 const SizedBox(
                     height: 18),
 
-                ...surahList
-                    .map(
-                      (e) =>
-                          surahItem(e),
-                    )
-                    .toList(),
+                ...surahList.map(
+                  (e) => surahItem(
+                    context,
+                    e,
+                  ),
+                ),
               ],
             ),
           ),
@@ -311,14 +373,15 @@ class _QuranPageState extends State<QuranPage>
           /// JUZ
           Padding(
             padding:
-                const EdgeInsets.all(16),
+                const EdgeInsets.all(
+                    16),
             child: ListView(
-              children: juzList
-                  .map(
-                    (e) =>
-                        juzItem(e),
-                  )
-                  .toList(),
+              children: juzList.map(
+                (e) => juzItem(
+                  context,
+                  e,
+                ),
+              ).toList(),
             ),
           ),
 
@@ -327,5 +390,81 @@ class _QuranPageState extends State<QuranPage>
         ],
       ),
     );
+  }
+}
+
+class QuranSearchDelegate
+    extends SearchDelegate {
+  final List<Map<String, String>>
+      surahList;
+
+  QuranSearchDelegate(
+      this.surahList);
+
+  @override
+  List<Widget>? buildActions(
+      BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(
+            Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      )
+    ];
+  }
+
+  @override
+  Widget? buildLeading(
+      BuildContext context) {
+    return IconButton(
+      icon:
+          const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(
+      BuildContext context) {
+    final results = surahList
+        .where(
+          (item) => item["name"]!
+              .toLowerCase()
+              .contains(
+                query.toLowerCase(),
+              ),
+        )
+        .toList();
+
+    return ListView(
+      children: results.map((item) {
+        return ListTile(
+          title:
+              Text(item["name"]!),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    SurahDetailPage(
+                  surahName:
+                      item["name"]!,
+                ),
+              ),
+            );
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(
+      BuildContext context) {
+    return buildResults(context);
   }
 }
