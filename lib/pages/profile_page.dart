@@ -1,231 +1,465 @@
 import 'package:flutter/material.dart';
 
+import 'login_page.dart';
+import 'language_page.dart';
+import 'notification_page.dart';
+import 'favourites_page.dart';
+import 'rate_us_page.dart';
+import 'support_us_page.dart';
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+  void go(BuildContext context, Widget page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => page,
+      ),
+    );
+  }
+
+  /// UPDATED LOGOUT ONLY
+  void logout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(20),
+        ),
+        title: const Text(
+          "Logout",
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: const Text(
+          "Are you sure want to logout?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Cancel",
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) =>
+                    const Center(
+                  child:
+                      CircularProgressIndicator(
+                    color: Color(
+                        0xff16A34A),
+                  ),
+                ),
+              );
+
+              await Future.delayed(
+                const Duration(
+                    seconds: 1),
+              );
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const LoginPage(),
+                ),
+                (route) => false,
+              );
+            },
+            style:
+                ElevatedButton.styleFrom(
+              backgroundColor:
+                  const Color(
+                      0xffEF4444),
+              shape:
+                  RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(
+                        12),
+              ),
+            ),
+            child: const Text(
+              "Logout",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight:
+                    FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+    return Scaffold(
+      backgroundColor:
+          const Color(0xffF3F4F6),
 
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding:
+              const EdgeInsets.fromLTRB(
+            16,
+            12,
+            16,
+            24,
+          ),
           child: Column(
             crossAxisAlignment:
                 CrossAxisAlignment.start,
-
             children: [
+              const SizedBox(height: 6),
 
-              const SizedBox(height: 8),
-
-              const Text(
-                "Me",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight:
-                      FontWeight.bold,
-                  color: Color(0xff0F172A),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // PROFILE CARD
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(
-                          28),
-
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black
-                          .withOpacity(0.05),
-                      blurRadius: 16,
-                      offset:
-                          const Offset(0, 8),
-                    ),
-                  ],
-                ),
-
-                child: Column(
-                  children: [
-
-                    const CircleAvatar(
-                      radius: 42,
-                      backgroundColor:
-                          Color(0xffDCFCE7),
-                      child: Icon(
-                        Icons.person,
-                        size: 42,
-                        color:
-                            Color(0xff16A34A),
+              /// TOP PROFILE
+              InkWell(
+                borderRadius:
+                    BorderRadius.circular(
+                        22),
+                onTap: () {
+                  go(
+                    context,
+                    const LoginPage(),
+                  );
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.all(
+                          16),
+                  decoration:
+                      BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                        BorderRadius
+                            .circular(
+                                22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black
+                            .withOpacity(
+                                0.04),
+                        blurRadius: 10,
+                        offset:
+                            const Offset(
+                                0, 4),
                       ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    const Text(
-                      "Farand",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight:
-                            FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    const Text(
-                      "farand@email.com",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color:
-                            Color(0xff64748B),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Container(
-                      padding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 8,
-                      ),
-
-                      decoration: BoxDecoration(
-                        color: const Color(
-                            0xffDCFCE7),
-                        borderRadius:
-                            BorderRadius.circular(
-                                30),
-                      ),
-
-                      child: const Text(
-                        "Premium Member",
-                        style: TextStyle(
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration:
+                            const BoxDecoration(
                           color: Color(
                               0xff16A34A),
-                          fontWeight:
-                              FontWeight.w600,
+                          shape:
+                              BoxShape
+                                  .circle,
+                        ),
+                        child: const Icon(
+                          Icons
+                              .person_outline,
+                          color: Colors
+                              .white,
+                          size: 34,
                         ),
                       ),
+
+                      const SizedBox(
+                          width: 14),
+
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment
+                                  .start,
+                          children: [
+                            Text(
+                              "Salaam",
+                              style:
+                                  TextStyle(
+                                fontSize:
+                                    18,
+                                fontWeight:
+                                    FontWeight
+                                        .w700,
+                              ),
+                            ),
+                            SizedBox(
+                                height:
+                                    4),
+                            Text(
+                              "tap to Log in",
+                              style:
+                                  TextStyle(
+                                fontSize:
+                                    14,
+                                color:
+                                    Color(
+                                        0xff64748B),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const Icon(
+                        Icons
+                            .chevron_right,
+                        color: Color(
+                            0xff94A3B8),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              /// PREMIUM CARD
+              InkWell(
+                borderRadius:
+                    BorderRadius.circular(
+                        22),
+                onTap: () {
+                  ScaffoldMessenger.of(
+                          context)
+                      .showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Premium feature coming soon",
+                      ),
                     ),
-                  ],
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.all(
+                          22),
+                  decoration:
+                      BoxDecoration(
+                    gradient:
+                        const LinearGradient(
+                      colors: [
+                        Color(
+                            0xff16A34A),
+                        Color(
+                            0xff22C55E),
+                      ],
+                    ),
+                    borderRadius:
+                        BorderRadius
+                            .circular(
+                                22),
+                  ),
+                  child: const Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment
+                            .start,
+                    children: [
+                      Text(
+                        "Enhance your experience",
+                        style:
+                            TextStyle(
+                          color: Colors
+                              .white,
+                          fontSize: 18,
+                          fontWeight:
+                              FontWeight
+                                  .w700,
+                        ),
+                      ),
+                      SizedBox(
+                          height: 6),
+                      Text(
+                        "Unlock more features →",
+                        style:
+                            TextStyle(
+                          color: Colors
+                              .white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-
-              const SizedBox(height: 28),
-
-              const Text(
-                "Account",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight:
-                      FontWeight.w700,
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              sectionCard([
-                item(Icons.workspace_premium,
-                    "Membership"),
-                item(Icons.account_balance_wallet,
-                    "Wallet"),
-                item(Icons.language,
-                    "Language"),
-              ]),
 
               const SizedBox(height: 24),
 
               const Text(
-                "Preferences",
+                "SETTINGS",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight:
                       FontWeight.w700,
+                  color:
+                      Color(0xff94A3B8),
                 ),
               ),
 
               const SizedBox(height: 14),
 
-              sectionCard([
-                item(Icons.notifications,
-                    "Notifications"),
-                item(Icons.access_time,
-                    "Prayer Settings"),
-                item(Icons.dark_mode,
-                    "Theme"),
-              ]),
+              menuCard(
+                context,
+                icon: Icons.language,
+                title: "Language",
+                subtitle: "English",
+                onTap: () {
+                  go(
+                    context,
+                    const LanguagePage(),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              menuCard(
+                context,
+                icon:
+                    Icons.notifications_none,
+                title:
+                    "Notifications",
+                onTap: () {
+                  go(
+                    context,
+                    const NotificationPage(),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              menuCard(
+                context,
+                icon:
+                    Icons.favorite_border,
+                title: "Favourites",
+                onTap: () {
+                  go(
+                    context,
+                    const FavouritesPage(),
+                  );
+                },
+              ),
 
               const SizedBox(height: 24),
 
               const Text(
-                "Support",
+                "GENERAL",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight:
                       FontWeight.w700,
+                  color:
+                      Color(0xff94A3B8),
                 ),
               ),
 
               const SizedBox(height: 14),
 
-              sectionCard([
-                item(Icons.help_outline,
-                    "Help Center"),
-                item(Icons.star_outline,
-                    "Rate App"),
-                item(Icons.info_outline,
-                    "About"),
-              ]),
+              menuCard(
+                context,
+                icon: Icons.star_border,
+                title: "Rate Us",
+                onTap: () {
+                  go(
+                    context,
+                    const RateUsPage(),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              menuCard(
+                context,
+                icon:
+                    Icons.volunteer_activism_outlined,
+                title:
+                    "Support Us",
+                onTap: () {
+                  go(
+                    context,
+                    const SupportUsPage(),
+                  );
+                },
+              ),
 
               const SizedBox(height: 30),
 
+              /// LOGOUT BUTTON
               SizedBox(
                 width: double.infinity,
-
                 child: ElevatedButton(
+                  onPressed: () {
+                    logout(context);
+                  },
                   style:
-                      ElevatedButton.styleFrom(
+                      ElevatedButton
+                          .styleFrom(
                     backgroundColor:
                         const Color(
-                            0xff16A34A),
-
+                            0xffEF4444),
+                    elevation: 0,
                     padding:
-                        const EdgeInsets.symmetric(
+                        const EdgeInsets
+                            .symmetric(
                       vertical: 16,
                     ),
-
                     shape:
                         RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(
-                              18),
+                          BorderRadius
+                              .circular(
+                                  18),
                     ),
                   ),
-
-                  onPressed: () {},
-
                   child: const Text(
                     "Logout",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight:
-                          FontWeight.w600,
-                      color: Colors.white,
+                          FontWeight.w700,
+                      color:
+                          Colors.white,
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+
+              const Center(
+                child: Text(
+                  "Version 1.0.0",
+                  style: TextStyle(
+                    color: Color(
+                        0xff94A3B8),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -233,76 +467,92 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget sectionCard(List<Widget> children) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(24),
-
-        boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-
-      child: Column(children: children),
-    );
-  }
-
-  Widget item(
-      IconData icon,
-      String title,
-      ) {
-    return Container(
-      margin:
-          const EdgeInsets.only(bottom: 10),
-
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 14,
-      ),
-
-      decoration: BoxDecoration(
-        color: const Color(0xffF8FAFC),
-        borderRadius:
-            BorderRadius.circular(16),
-      ),
-
-      child: Row(
-        children: [
-
-          Icon(
-            icon,
-            color:
-                const Color(0xff16A34A),
-          ),
-
-          const SizedBox(width: 14),
-
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontWeight:
-                    FontWeight.w600,
+  Widget menuCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius:
+          BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        padding:
+            const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius:
+              BorderRadius.circular(
+                  18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black
+                  .withOpacity(0.04),
+              blurRadius: 8,
+              offset:
+                  const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 46,
+              height: 46,
+              decoration:
+                  BoxDecoration(
+                color: const Color(
+                    0xffDCFCE7),
+                borderRadius:
+                    BorderRadius
+                        .circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: const Color(
+                    0xff16A34A),
               ),
             ),
-          ),
 
-          const Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: Colors.grey,
-          ),
-        ],
+            const SizedBox(width: 14),
+
+            Expanded(
+              child: Text(
+                title,
+                style:
+                    const TextStyle(
+                  fontSize: 15,
+                  fontWeight:
+                      FontWeight.w600,
+                ),
+              ),
+            ),
+
+            if (subtitle != null)
+              Text(
+                subtitle,
+                style:
+                    const TextStyle(
+                  color: Color(
+                      0xff64748B),
+                  fontSize: 14,
+                ),
+              ),
+
+            const SizedBox(width: 6),
+
+            const Icon(
+              Icons.chevron_right,
+              color:
+                  Color(0xff94A3B8),
+            ),
+          ],
+        ),
       ),
     );
   }

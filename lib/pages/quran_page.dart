@@ -17,37 +17,37 @@ class _QuranPageState extends State<QuranPage>
       "no": "1",
       "name": "Al-Fatihah",
       "type": "Meccan",
-      "ayah": "7 Ayahs"
+      "ayah": "7 Ayahs",
     },
     {
       "no": "2",
       "name": "Al-Baqarah",
       "type": "Medinan",
-      "ayah": "286 Ayahs"
+      "ayah": "286 Ayahs",
     },
     {
       "no": "3",
       "name": "Ali 'Imran",
       "type": "Medinan",
-      "ayah": "200 Ayahs"
+      "ayah": "200 Ayahs",
     },
     {
       "no": "4",
       "name": "An-Nisa",
       "type": "Medinan",
-      "ayah": "176 Ayahs"
+      "ayah": "176 Ayahs",
     },
     {
       "no": "5",
       "name": "Al-Ma'idah",
       "type": "Medinan",
-      "ayah": "120 Ayahs"
+      "ayah": "120 Ayahs",
     },
     {
       "no": "6",
       "name": "Al-An'am",
       "type": "Meccan",
-      "ayah": "165 Ayahs"
+      "ayah": "165 Ayahs",
     },
   ];
 
@@ -55,30 +55,39 @@ class _QuranPageState extends State<QuranPage>
     {
       "no": "1",
       "title": "Juz 1",
-      "desc": "Al-Fatihah - Al-Baqarah"
+      "desc": "Al-Fatihah - Al-Baqarah",
     },
     {
       "no": "2",
       "title": "Juz 2",
-      "desc": "Al-Baqarah"
+      "desc": "Al-Baqarah",
     },
     {
       "no": "3",
       "title": "Juz 3",
-      "desc": "Al-Baqarah - Ali Imran"
+      "desc": "Al-Baqarah - Ali Imran",
     },
     {
       "no": "4",
       "title": "Juz 4",
-      "desc": "Ali Imran - An-Nisa"
+      "desc": "Ali Imran - An-Nisa",
     },
   ];
+
+  final Set<String> favouriteItems = {};
 
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(length: 3, vsync: this);
+
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+    );
+
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -87,7 +96,41 @@ class _QuranPageState extends State<QuranPage>
     super.dispose();
   }
 
-  Widget buildCircleNumber(String no) {
+  bool isFavourite(String title) {
+    return favouriteItems.contains(title);
+  }
+
+  void toggleFavourite(String title) {
+    setState(() {
+      if (isFavourite(title)) {
+        favouriteItems.remove(title);
+      } else {
+        favouriteItems.add(title);
+      }
+    });
+  }
+
+  void openSearch() {
+    if (_tabController.index == 0) {
+      showSearch(
+        context: context,
+        delegate: QuranSearchDelegate(
+          items: surahList,
+          keyName: "name",
+        ),
+      );
+    } else if (_tabController.index == 1) {
+      showSearch(
+        context: context,
+        delegate: QuranSearchDelegate(
+          items: juzList,
+          keyName: "title",
+        ),
+      );
+    }
+  }
+
+  Widget buildNumberCircle(String no) {
     return Container(
       width: 34,
       height: 34,
@@ -99,7 +142,7 @@ class _QuranPageState extends State<QuranPage>
         child: Text(
           no,
           style: const TextStyle(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
             color: Color(0xff16A34A),
           ),
         ),
@@ -107,138 +150,113 @@ class _QuranPageState extends State<QuranPage>
     );
   }
 
-  Widget surahItem(
-      BuildContext context,
-      Map<String, String> item) {
+  Widget buildListItem({
+    required String no,
+    required String title,
+    required String subtitle,
+  }) {
+    final fav = isFavourite(title);
+
     return InkWell(
-      borderRadius:
-          BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(16),
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                SurahDetailPage(
-              surahName:
-                  item["name"]!,
+            builder: (_) => SurahDetailPage(
+              surahName: title,
             ),
           ),
         );
       },
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 0,
-          vertical: 2,
+          vertical: 4,
         ),
-        leading:
-            buildCircleNumber(item["no"]!),
+        leading: buildNumberCircle(no),
         title: Text(
-          item["name"]!,
+          title,
           style: const TextStyle(
-            fontWeight:
-                FontWeight.w600,
+            fontWeight: FontWeight.w600,
           ),
         ),
         subtitle: Text(
-          "${item["type"]} • ${item["ayah"]}",
+          subtitle,
           style: const TextStyle(
             fontSize: 12,
             color: Colors.grey,
           ),
         ),
-        trailing: const Icon(
-          Icons.chevron_right,
-          color: Colors.grey,
-        ),
-      ),
-    );
-  }
-
-  Widget juzItem(
-      BuildContext context,
-      Map<String, String> item) {
-    return InkWell(
-      borderRadius:
-          BorderRadius.circular(18),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) =>
-                SurahDetailPage(
-              surahName:
-                  item["title"]!,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () {
+                toggleFavourite(title);
+              },
+              icon: Icon(
+                fav
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                color:
+                    fav ? Colors.red : Colors.grey,
+              ),
             ),
-          ),
-        );
-      },
-      child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(
-          horizontal: 0,
-        ),
-        leading:
-            buildCircleNumber(item["no"]!),
-        title: Text(
-          item["title"]!,
-          style: const TextStyle(
-            fontWeight:
-                FontWeight.w600,
-          ),
-        ),
-        subtitle: Text(
-          item["desc"]!,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
-          ),
-        ),
-        trailing: const Icon(
-          Icons.chevron_right,
-          color: Colors.grey,
-        ),
-      ),
-    );
-  }
-
-  Widget favouriteEmpty() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment:
-            MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.favorite_border,
-            size: 60,
-            color: Colors.grey,
-          ),
-          SizedBox(height: 12),
-          Text(
-            "No favourites yet",
-            style: TextStyle(
-              fontWeight:
-                  FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 6),
-          Text(
-            "Save verses to see them here",
-            style: TextStyle(
+            const Icon(
+              Icons.chevron_right,
               color: Colors.grey,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  void openSearch() {
-    showSearch(
-      context: context,
-      delegate:
-          QuranSearchDelegate(
-        surahList,
+  Widget buildFavouritePage() {
+    final List<Widget> favList = [];
+
+    for (var item in surahList) {
+      if (isFavourite(item["name"]!)) {
+        favList.add(
+          buildListItem(
+            no: item["no"]!,
+            title: item["name"]!,
+            subtitle:
+                "${item["type"]} • ${item["ayah"]}",
+          ),
+        );
+      }
+    }
+
+    for (var item in juzList) {
+      if (isFavourite(item["title"]!)) {
+        favList.add(
+          buildListItem(
+            no: item["no"]!,
+            title: item["title"]!,
+            subtitle: item["desc"]!,
+          ),
+        );
+      }
+    }
+
+    if (favList.isEmpty) {
+      return const Center(
+        child: Text(
+          "No favourites yet",
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ListView(
+        children: favList,
       ),
     );
   }
@@ -246,40 +264,35 @@ class _QuranPageState extends State<QuranPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color(0xffF8FAFC),
+      backgroundColor: const Color(0xffF8FAFC),
 
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         title: const Text(
           "Quran",
           style: TextStyle(
             color: Colors.black,
-            fontWeight:
-                FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        centerTitle: true,
         iconTheme:
-            const IconThemeData(
-          color: Colors.black,
-        ),
+            const IconThemeData(color: Colors.black),
+
         actions: [
-          IconButton(
-            onPressed: openSearch,
-            icon:
-                const Icon(Icons.search),
-          ),
+          if (_tabController.index != 2)
+            IconButton(
+              onPressed: openSearch,
+              icon: const Icon(Icons.search),
+            ),
         ],
+
         bottom: TabBar(
           controller: _tabController,
-          labelColor:
-              const Color(0xff16A34A),
-          unselectedLabelColor:
-              Colors.grey,
-          indicatorColor:
-              const Color(0xff16A34A),
+          labelColor: const Color(0xff16A34A),
+          unselectedLabelColor: Colors.grey,
+          indicatorColor: const Color(0xff16A34A),
           tabs: const [
             Tab(text: "Surah"),
             Tab(text: "Juz"),
@@ -291,168 +304,85 @@ class _QuranPageState extends State<QuranPage>
       body: TabBarView(
         controller: _tabController,
         children: [
-
-          /// SURAH
           Padding(
-            padding:
-                const EdgeInsets.all(
-                    16),
+            padding: const EdgeInsets.all(16),
             child: ListView(
-              children: [
-
-                Container(
-                  padding:
-                      const EdgeInsets
-                          .all(16),
-                  decoration:
-                      BoxDecoration(
-                    color:
-                        Colors.white,
-                    borderRadius:
-                        BorderRadius
-                            .circular(
-                                18),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment
-                            .spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment
-                                .start,
-                        children: [
-                          Text(
-                            "Continue Reading",
-                            style:
-                                TextStyle(
-                              fontWeight:
-                                  FontWeight
-                                      .w600,
-                            ),
-                          ),
-                          SizedBox(
-                              height: 6),
-                          Text(
-                            "Al-Baqarah • Ayah 2",
-                            style:
-                                TextStyle(
-                              color:
-                                  Colors
-                                      .grey,
-                              fontSize:
-                                  12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        Icons
-                            .menu_book,
-                        color: Color(
-                            0xff16A34A),
-                      )
-                    ],
-                  ),
-                ),
-
-                const SizedBox(
-                    height: 18),
-
-                ...surahList.map(
-                  (e) => surahItem(
-                    context,
-                    e,
-                  ),
-                ),
-              ],
+              children: surahList.map((item) {
+                return buildListItem(
+                  no: item["no"]!,
+                  title: item["name"]!,
+                  subtitle:
+                      "${item["type"]} • ${item["ayah"]}",
+                );
+              }).toList(),
             ),
           ),
 
-          /// JUZ
           Padding(
-            padding:
-                const EdgeInsets.all(
-                    16),
+            padding: const EdgeInsets.all(16),
             child: ListView(
-              children: juzList.map(
-                (e) => juzItem(
-                  context,
-                  e,
-                ),
-              ).toList(),
+              children: juzList.map((item) {
+                return buildListItem(
+                  no: item["no"]!,
+                  title: item["title"]!,
+                  subtitle: item["desc"]!,
+                );
+              }).toList(),
             ),
           ),
 
-          /// FAV
-          favouriteEmpty(),
+          buildFavouritePage(),
         ],
       ),
     );
   }
 }
 
-class QuranSearchDelegate
-    extends SearchDelegate {
-  final List<Map<String, String>>
-      surahList;
+class QuranSearchDelegate extends SearchDelegate {
+  final List<Map<String, String>> items;
+  final String keyName;
 
-  QuranSearchDelegate(
-      this.surahList);
+  QuranSearchDelegate({
+    required this.items,
+    required this.keyName,
+  });
 
   @override
   List<Widget>? buildActions(
       BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(
-            Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      )
-    ];
+    return [];
   }
 
   @override
   Widget? buildLeading(
       BuildContext context) {
     return IconButton(
-      icon:
-          const Icon(Icons.arrow_back),
       onPressed: () {
         close(context, null);
       },
+      icon: const Icon(Icons.arrow_back),
     );
   }
 
   @override
   Widget buildResults(
       BuildContext context) {
-    final results = surahList
-        .where(
-          (item) => item["name"]!
-              .toLowerCase()
-              .contains(
-                query.toLowerCase(),
-              ),
-        )
-        .toList();
+    final results = items.where((item) {
+      return item[keyName]!
+          .toLowerCase()
+          .contains(query.toLowerCase());
+    }).toList();
 
     return ListView(
       children: results.map((item) {
         return ListTile(
-          title:
-              Text(item["name"]!),
+          title: Text(item[keyName]!),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) =>
-                    SurahDetailPage(
-                  surahName:
-                      item["name"]!,
+                builder: (_) => SurahDetailPage(
+                  surahName: item[keyName]!,
                 ),
               ),
             );
