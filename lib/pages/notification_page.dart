@@ -110,7 +110,7 @@ class _NotificationPageState
       title: Text(title),
       trailing: Switch(
         value: value,
-        activeColor:
+        activeThumbColor:
             const Color(
                 0xff22C55E),
         onChanged: onChanged,
