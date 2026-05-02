@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'quran_page.dart';
+import 'qibla_page.dart';
+import 'mosque_page.dart';
+import 'tracker_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -251,19 +254,40 @@ class _HomePageState extends State<HomePage> {
                   QuickBox(
                     icon: Icons.bar_chart,
                     title: "Tracker",
-                    onTap: () => openMenu("Tracker"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const TrackerPage(),
+                        ),
+                      );
+                    },
                   ),
 
                   QuickBox(
                     icon: Icons.explore,
                     title: "Qibla",
-                    onTap: () => openMenu("Qibla"),
+                    onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const QiblaPage(),
+                          ),
+                        );
+                      },
                   ),
 
                   QuickBox(
                     icon: Icons.location_on,
                     title: "Mosques",
-                    onTap: () => openMenu("Mosques"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MosquePage(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
