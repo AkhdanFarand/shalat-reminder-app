@@ -21,21 +21,20 @@ class _TrackerPageState extends State<TrackerPage> {
     return Scaffold(
       backgroundColor: const Color(0xffF1F5F9),
 
-      appBar: AppBar(
+        appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text("Tracker",
-            style: TextStyle(color: Colors.black)),
+        title: const Text(
+          "Tracker",
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.search, color: Colors.black),
-          )
-        ],
       ),
 
       body: Column(
@@ -231,20 +230,45 @@ class _TrackerPageState extends State<TrackerPage> {
 
                 const SizedBox(height: 10),
 
-                Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
-                  children: List.generate(7, (index) {
-                    return Container(
-                      width: 18,
-                      height: 80 + (index * 10).toDouble(),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius:
-                            BorderRadius.circular(6),
-                      ),
-                    );
-                  }),
+                SizedBox(
+                  height: 160,
+                  child: Row(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.end,
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      7,
+                      (index) {
+                        final heights = [
+                          90.0,
+                          120.0,
+                          70.0,
+                          140.0,
+                          110.0,
+                          150.0,
+                          130.0,
+                        ];
+
+                        return Column(
+                          mainAxisAlignment:
+                              MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              width: 20,
+                              height: heights[index],
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius:
+                                    BorderRadius.circular(
+                                        6),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 20),
@@ -276,22 +300,28 @@ class _TrackerPageState extends State<TrackerPage> {
           SizedBox(width: 70, child: Text(title)),
 
           Expanded(
-            child: Container(
-              height: 8,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: FractionallySizedBox(
-                widthFactor: value,
-                child: Container(
+            child: Stack(
+              children: [
+                Container(
+                  height: 8,
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Colors.grey.shade300,
                     borderRadius:
                         BorderRadius.circular(10),
                   ),
                 ),
-              ),
+                FractionallySizedBox(
+                  widthFactor: value,
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius:
+                          BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
