@@ -81,11 +81,11 @@ class _NotificationPageState
               divider(),
 
               /// Reminder Before
-              ListTile(
-                title: const Text(
+              const ListTile(
+                title: Text(
                   "Reminder Before",
                 ),
-                trailing: const Text(
+                trailing: Text(
                   "10 minutes",
                   style: TextStyle(
                     color: Color(
