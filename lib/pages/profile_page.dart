@@ -6,9 +6,47 @@ import 'notification_page.dart';
 import 'favourites_page.dart';
 import 'rate_us_page.dart';
 import 'support_us_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilePage extends StatelessWidget {
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+
+  // ======================
+  // DATA USER
+  // ======================
+
+  String fullName = "Salaam";
+  String email = "Tap to Log in";
+  bool isLogin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    SharedPreferences prefs =
+        await SharedPreferences.getInstance();
+
+    print("PROFILE PAGE");
+    print(prefs.getBool("isLogin"));
+    print(prefs.getString("full_name"));
+    print(prefs.getString("email"));
+
+    setState(() {
+      isLogin = prefs.getBool("isLogin") ?? false;
+      fullName = prefs.getString("full_name") ?? "Salaam";
+      email = prefs.getString("email") ?? "Tap to Log in";
+    });
+  }
 
   void go(BuildContext context, Widget page) {
     Navigator.push(
@@ -20,92 +58,24 @@ class ProfilePage extends StatelessWidget {
   }
 
   /// UPDATED LOGOUT ONLY
-  void logout(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(20),
-        ),
-        title: const Text(
-          "Logout",
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        content: const Text(
-          "Are you sure want to logout?",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text(
-              "Cancel",
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context);
+  void logout(BuildContext context) async {
 
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) =>
-                    const Center(
-                  child:
-                      CircularProgressIndicator(
-                    color: Color(
-                        0xff16A34A),
-                  ),
-                ),
-              );
+    SharedPreferences prefs =
+        await SharedPreferences.getInstance();
 
-              await Future.delayed(
-                const Duration(
-                    seconds: 1),
-              );
+    await prefs.clear();
 
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      const LoginPage(),
-                ),
-                (route) => false,
-              );
-            },
-            style:
-                ElevatedButton.styleFrom(
-              backgroundColor:
-                  const Color(
-                      0xffEF4444),
-              shape:
-                  RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(
-                        12),
-              ),
-            ),
-            child: const Text(
-              "Logout",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight:
-                    FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+    if (!context.mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginPage(),
       ),
+      (route) => false,
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,11 +102,17 @@ class ProfilePage extends StatelessWidget {
                 borderRadius:
                     BorderRadius.circular(
                         22),
-                onTap: () {
-                  go(
-                    context,
-                    const LoginPage(),
-                  );
+                onTap: () async {
+                  if (!isLogin) {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LoginPage(),
+                      ),
+                    );
+
+                    getUser();
+                  }
                 },
                 child: Container(
                   padding:
@@ -186,35 +162,26 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(
                           width: 14),
 
-                      const Expanded(
+                      Expanded(
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             Text(
-                              "Salaam",
-                              style:
-                                  TextStyle(
-                                fontSize:
-                                    18,
-                                fontWeight:
-                                    FontWeight
-                                        .w700,
+                              fullName,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            SizedBox(
-                                height:
-                                    4),
+
+                            const SizedBox(height: 4),
+
                             Text(
-                              "tap to Log in",
-                              style:
-                                  TextStyle(
-                                fontSize:
-                                    14,
-                                color:
-                                    Color(
-                                        0xff64748B),
+                              email,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color(0xff64748B),
                               ),
                             ),
                           ],

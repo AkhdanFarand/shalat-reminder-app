@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'home_page.dart';
 import 'register_page.dart';
-import 'bottom_nav_page.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,22 +31,32 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final data = jsonDecode(response.body);
+      print(data);
 
       if (data["success"] == true) {
-        final prefs =
+
+        SharedPreferences prefs =
             await SharedPreferences.getInstance();
 
-        await prefs.setBool(
-          "isLogin",
-          true,
+        await prefs.setBool("isLogin", true);
+
+        await prefs.setString(
+          "full_name",
+          data["user"]["full_name"],
         );
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const BottomNavPage(),
-          ),
+        await prefs.setString(
+          "email",
+          data["user"]["email"],
         );
+
+        print("LOGIN SUCCESS");
+        print(await prefs.getBool("isLogin"));
+        print(await prefs.getString("full_name"));
+        print(await prefs.getString("email"));
+
+        Navigator.pop(context);
+
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
