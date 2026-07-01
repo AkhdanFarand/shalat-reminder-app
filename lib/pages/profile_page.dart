@@ -58,22 +58,45 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   /// UPDATED LOGOUT ONLY
-  void logout(BuildContext context) async {
+  Future<void> logout() async {
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Logout"),
+          content: const Text(
+            "Are you sure you want to logout?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text("Logout"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm != true) return;
 
     SharedPreferences prefs =
         await SharedPreferences.getInstance();
 
     await prefs.clear();
 
-    if (!context.mounted) return;
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const LoginPage(),
-      ),
-      (route) => false,
-    );
+    setState(() {
+      isLogin = false;
+      fullName = "Salaam";
+      email = "Tap to Log in";
+    });
   }
   
   @override
@@ -376,44 +399,31 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 30),
 
               /// LOGOUT BUTTON
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    logout(context);
-                  },
-                  style:
-                      ElevatedButton
-                          .styleFrom(
-                    backgroundColor:
-                        const Color(
-                            0xffEF4444),
-                    elevation: 0,
-                    padding:
-                        const EdgeInsets
-                            .symmetric(
-                      vertical: 16,
+              if (isLogin)
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: logout,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffEF4444),
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
                     ),
-                    shape:
-                        RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius
-                              .circular(
-                                  18),
-                    ),
-                  ),
-                  child: const Text(
-                    "Logout",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight:
-                          FontWeight.w700,
-                      color:
-                          Colors.white,
+                    child: const Text(
+                      "Logout",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
               const SizedBox(height: 16),
 

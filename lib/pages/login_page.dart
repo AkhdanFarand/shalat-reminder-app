@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_application_1/navigation_page.dart';
 
 import 'register_page.dart';
 
@@ -55,7 +56,13 @@ class _LoginPageState extends State<LoginPage> {
         print(await prefs.getString("full_name"));
         print(await prefs.getString("email"));
 
-        Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const NavigationPage(),
+          ),
+          (route) => false,
+        );
 
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
