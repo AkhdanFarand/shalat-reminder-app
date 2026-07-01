@@ -1,293 +1,186 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/verse_model.dart';
+import 'package:flutter_application_1/services/quran_service.dart';
 
-class SurahDetailPage extends StatelessWidget {
+class SurahDetailPage extends StatefulWidget {
+  final int surahNumber;
   final String surahName;
 
   const SurahDetailPage({
     super.key,
+    required this.surahNumber,
     required this.surahName,
   });
 
-  List<Map<String, String>> getVerses() {
-    if (surahName == "Al-Fatihah") {
-      return [
-        {
-          "arab":
-              "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-          "arti":
-              "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang."
-        },
-        {
-          "arab":
-              "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-          "arti":
-              "Segala puji bagi Allah, Tuhan semesta alam."
-        },
-        {
-          "arab":
-              "الرَّحْمَٰنِ الرَّحِيمِ",
-          "arti":
-              "Yang Maha Pengasih lagi Maha Penyayang."
-        },
-        {
-          "arab":
-              "مَالِكِ يَوْمِ الدِّينِ",
-          "arti":
-              "Pemilik hari Pembalasan."
-        },
-        {
-          "arab":
-              "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
-          "arti":
-              "Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan."
-        },
-        {
-          "arab":
-              "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
-          "arti":
-              "Tunjukilah kami jalan yang lurus."
-        },
-        {
-          "arab":
-              "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ",
-          "arti":
-              "Jalan orang-orang yang telah Engkau beri nikmat."
-        },
-      ];
-    }
+  @override
+  State<SurahDetailPage> createState() =>
+      _SurahDetailPageState();
+}
 
-    if (surahName == "Al-Ikhlas") {
-      return [
-        {
-          "arab":
-              "قُلْ هُوَ اللَّهُ أَحَدٌ",
-          "arti":
-              "Katakanlah: Dialah Allah Yang Maha Esa."
-        },
-        {
-          "arab":
-              "اللَّهُ الصَّمَدُ",
-          "arti":
-              "Allah tempat meminta segala sesuatu."
-        },
-        {
-          "arab":
-              "لَمْ يَلِدْ وَلَمْ يُولَدْ",
-          "arti":
-              "Dia tidak beranak dan tidak diperanakkan."
-        },
-        {
-          "arab":
-              "وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
-          "arti":
-              "Dan tidak ada sesuatu yang setara dengan-Nya."
-        },
-      ];
-    }
+class _SurahDetailPageState
+    extends State<SurahDetailPage> {
 
-    if (surahName == "Al-Kafirun") {
-      return [
-        {
-          "arab":
-              "قُلْ يَا أَيُّهَا الْكَافِرُونَ",
-          "arti":
-              "Katakanlah: Wahai orang-orang kafir."
-        },
-        {
-          "arab":
-              "لَا أَعْبُدُ مَا تَعْبُدُونَ",
-          "arti":
-              "Aku tidak akan menyembah apa yang kamu sembah."
-        },
-        {
-          "arab":
-              "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ",
-          "arti":
-              "Dan kamu bukan penyembah apa yang aku sembah."
-        },
-        {
-          "arab":
-              "لَكُمْ دِينُكُمْ وَلِيَ دِينِ",
-          "arti":
-              "Untukmu agamamu dan untukku agamaku."
-        },
-      ];
-    }
+  late Future<List<VerseModel>> futureVerses;
 
-    return [
-      {
-        "arab":
-            "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ",
-        "arti":
-            "Ini adalah contoh isi dummy premium untuk $surahName."
-      },
-      {
-        "arab":
-            "اللَّهُ أَكْبَرُ",
-        "arti":
-            "Surah ini dapat diisi lengkap nanti."
-      },
-      {
-        "arab":
-            "لَا إِلٰهَ إِلَّا اللَّهُ",
-        "arti":
-            "Saat ini menggunakan data demo interaktif."
-      },
-    ];
+  @override
+  void initState() {
+    super.initState();
+
+    futureVerses = QuranService.getVerses(
+      widget.surahNumber,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final verses = getVerses();
-
     return Scaffold(
-      backgroundColor:
-          const Color(0xffF5EEDF),
+      backgroundColor: const Color(0xffF5EEDF),
 
       appBar: AppBar(
-        backgroundColor:
-            const Color(
-                0xffF5EEDF),
+        backgroundColor: const Color(0xffF5EEDF),
         elevation: 0,
-        iconTheme:
-            const IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
         title: Text(
-          surahName,
-          style:
-              const TextStyle(
+          widget.surahName,
+          style: const TextStyle(
             color: Colors.black,
-            fontWeight:
-                FontWeight.w600,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
 
-      body: ListView(
-        padding:
-            const EdgeInsets.all(
-                20),
-        children: [
+      body: FutureBuilder<List<VerseModel>>(
+        future: futureVerses,
+        builder: (context, snapshot) {
 
-          Container(
-            padding:
-                const EdgeInsets.symmetric(
-              vertical: 18,
-            ),
-            decoration:
-                BoxDecoration(
-              border: Border.all(
-                color:
-                    Colors.black12,
-              ),
-              borderRadius:
-                  BorderRadius.circular(
-                      18),
-            ),
-            child: Center(
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
               child: Text(
-                surahName,
-                style:
-                    const TextStyle(
-                  fontSize: 28,
-                  fontWeight:
-                      FontWeight.w600,
+                snapshot.error.toString(),
+              ),
+            );
+          }
+
+          final verses = snapshot.data!;
+
+          return ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 18,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                  ),
+                  borderRadius:
+                      BorderRadius.circular(18),
+                ),
+                child: Center(
+                  child: Text(
+                    widget.surahName,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
 
-          const SizedBox(
-              height: 28),
+              const SizedBox(height: 28),
 
-          ...List.generate(
-            verses.length,
-            (index) {
-              final item =
-                  verses[index];
+              ...List.generate(
+                verses.length,
+                (index) {
 
-              return Container(
-                margin:
-                    const EdgeInsets.only(
-                        bottom:
-                            22),
+                  final item = verses[index];
 
-                padding:
-                    const EdgeInsets.all(
-                        18),
+                  return Container(
+                    margin: const EdgeInsets.only(
+                      bottom: 22,
+                    ),
 
-                decoration:
-                    BoxDecoration(
-                  color:
-                      Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(
-                          18),
-                ),
+                    padding: const EdgeInsets.all(
+                      18,
+                    ),
 
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(
+                        18,
+                      ),
+                    ),
 
-                  children: [
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
 
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor:
-                          const Color(
-                              0xffDCFCE7),
-                      child: Text(
-                        "${index + 1}",
-                        style:
-                            const TextStyle(
-                          color: Color(
-                              0xff16A34A),
+                      children: [
+
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundColor:
+                              const Color(
+                                  0xffDCFCE7),
+                          child: Text(
+                            item.number.toString(),
+                            style:
+                                const TextStyle(
+                              color: Color(
+                                  0xff16A34A),
+                            ),
+                          ),
                         ),
-                      ),
+
+                        const SizedBox(
+                          height: 16,
+                        ),
+
+                        Text(
+                          item.arab,
+                          textAlign:
+                              TextAlign.right,
+                          style:
+                              const TextStyle(
+                            fontSize: 28,
+                            height: 1.8,
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 14,
+                        ),
+
+                        Text(
+                          item.translation,
+                          style:
+                              const TextStyle(
+                            fontSize: 16,
+                            color:
+                                Colors.black54,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
                     ),
-
-                    const SizedBox(
-                        height:
-                            16),
-
-                    Text(
-                      item["arab"]!,
-                      textAlign:
-                          TextAlign
-                              .right,
-                      style:
-                          const TextStyle(
-                        fontSize:
-                            28,
-                        height:
-                            1.8,
-                      ),
-                    ),
-
-                    const SizedBox(
-                        height:
-                            14),
-
-                    Text(
-                      item["arti"]!,
-                      style:
-                          const TextStyle(
-                        fontSize:
-                            16,
-                        color: Colors
-                            .black54,
-                        height:
-                            1.5,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+                  );
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

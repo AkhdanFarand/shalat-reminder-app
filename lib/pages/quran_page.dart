@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'surah_detail_page.dart';
+import 'juz_detail_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/surah_model.dart';
+import '../services/quran_service.dart';
 
 class QuranPage extends StatefulWidget {
   const QuranPage({super.key});
@@ -12,44 +16,26 @@ class _QuranPageState extends State<QuranPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  final List<Map<String, String>> surahList = [
-    {
-      "no": "1",
-      "name": "Al-Fatihah",
-      "type": "Meccan",
-      "ayah": "7 Ayahs",
-    },
-    {
-      "no": "2",
-      "name": "Al-Baqarah",
-      "type": "Medinan",
-      "ayah": "286 Ayahs",
-    },
-    {
-      "no": "3",
-      "name": "Ali 'Imran",
-      "type": "Medinan",
-      "ayah": "200 Ayahs",
-    },
-    {
-      "no": "4",
-      "name": "An-Nisa",
-      "type": "Medinan",
-      "ayah": "176 Ayahs",
-    },
-    {
-      "no": "5",
-      "name": "Al-Ma'idah",
-      "type": "Medinan",
-      "ayah": "120 Ayahs",
-    },
-    {
-      "no": "6",
-      "name": "Al-An'am",
-      "type": "Meccan",
-      "ayah": "165 Ayahs",
-    },
-  ];
+  List<SurahModel> surahList = [];
+  bool loading = true;
+
+  Future<void> loadSurah() async {
+    try {
+      surahList = await QuranService.getSurah();
+
+      setState(() {
+        loading = false;
+      });
+
+      print("Jumlah Surah : ${surahList.length}");
+    } catch (e) {
+      print(e);
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
 
   final List<Map<String, String>> juzList = [
     {
@@ -76,9 +62,41 @@ class _QuranPageState extends State<QuranPage>
 
   final Set<String> favouriteItems = {};
 
+  Future<void> loadFavourites() async {
+    SharedPreferences prefs =
+        await SharedPreferences.getInstance();
+
+    List<String> data =
+        prefs.getStringList("favorite_items") ?? [];
+
+    print("LOAD:");
+    print(data);
+
+    setState(() {
+      favouriteItems.clear();
+      favouriteItems.addAll(data);
+    });
+  }
+
+  Future<void> saveFavourites() async {
+    SharedPreferences prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.setStringList(
+      "favorite_items",
+      favouriteItems.toList(),
+    );
+
+    print("SAVE:");
+    print(favouriteItems.toList());
+  }
+
   @override
   void initState() {
     super.initState();
+
+    loadFavourites();
+    loadSurah();
 
     _tabController = TabController(
       length: 3,
@@ -100,7 +118,7 @@ class _QuranPageState extends State<QuranPage>
     return favouriteItems.contains(title);
   }
 
-  void toggleFavourite(String title) {
+  void toggleFavourite(String title) async {
     setState(() {
       if (isFavourite(title)) {
         favouriteItems.remove(title);
@@ -108,26 +126,16 @@ class _QuranPageState extends State<QuranPage>
         favouriteItems.add(title);
       }
     });
+
+    await saveFavourites();
   }
 
   void openSearch() {
-    if (_tabController.index == 0) {
-      showSearch(
-        context: context,
-        delegate: QuranSearchDelegate(
-          items: surahList,
-          keyName: "name",
-        ),
-      );
-    } else if (_tabController.index == 1) {
-      showSearch(
-        context: context,
-        delegate: QuranSearchDelegate(
-          items: juzList,
-          keyName: "title",
-        ),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Search akan kita update setelah API berhasil."),
+      ),
+    );
   }
 
   Widget buildNumberCircle(String no) {
@@ -154,20 +162,34 @@ class _QuranPageState extends State<QuranPage>
     required String no,
     required String title,
     required String subtitle,
+    required bool isJuz,
   }) {
     final fav = isFavourite(title);
 
     return InkWell(
-      borderRadius: BorderRadius.circular(16),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => SurahDetailPage(
-              surahName: title,
+        if (isJuz) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => JuzDetailPage(
+                juzNumber: no,
+                title: title,
+                desc: subtitle,
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SurahDetailPage(
+                surahNumber: int.parse(no),
+                surahName: title,
+              )
+            ),
+          );
+        }
       },
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(
@@ -217,13 +239,13 @@ class _QuranPageState extends State<QuranPage>
     final List<Widget> favList = [];
 
     for (var item in surahList) {
-      if (isFavourite(item["name"]!)) {
+      if (isFavourite(item.englishName)) {
         favList.add(
           buildListItem(
-            no: item["no"]!,
-            title: item["name"]!,
-            subtitle:
-                "${item["type"]} • ${item["ayah"]}",
+            no: item.number.toString(),
+            title: item.englishName,
+            subtitle: "${item.revelationType} • ${item.ayahs} Ayahs",
+            isJuz: false,
           ),
         );
       }
@@ -236,6 +258,7 @@ class _QuranPageState extends State<QuranPage>
             no: item["no"]!,
             title: item["title"]!,
             subtitle: item["desc"]!,
+            isJuz: true,
           ),
         );
       }
@@ -304,19 +327,26 @@ class _QuranPageState extends State<QuranPage>
       body: TabBarView(
         controller: _tabController,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ListView(
-              children: surahList.map((item) {
-                return buildListItem(
-                  no: item["no"]!,
-                  title: item["name"]!,
-                  subtitle:
-                      "${item["type"]} • ${item["ayah"]}",
-                );
-              }).toList(),
-            ),
-          ),
+          loading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(16),
+                child: ListView.builder(
+                  itemCount: surahList.length,
+                  itemBuilder: (context, index) {
+                    final item = surahList[index];
+
+                    return buildListItem(
+                      no: item.number.toString(),
+                      title: item.englishName,
+                      subtitle: "${item.revelationType} • ${item.ayahs} Ayahs",
+                      isJuz: false,
+                    );
+                  },
+                ),
+              ),
 
           Padding(
             padding: const EdgeInsets.all(16),
@@ -326,6 +356,7 @@ class _QuranPageState extends State<QuranPage>
                   no: item["no"]!,
                   title: item["title"]!,
                   subtitle: item["desc"]!,
+                  isJuz: true,
                 );
               }).toList(),
             ),
@@ -335,66 +366,5 @@ class _QuranPageState extends State<QuranPage>
         ],
       ),
     );
-  }
-}
-
-class QuranSearchDelegate extends SearchDelegate {
-  final List<Map<String, String>> items;
-  final String keyName;
-
-  QuranSearchDelegate({
-    required this.items,
-    required this.keyName,
-  });
-
-  @override
-  List<Widget>? buildActions(
-      BuildContext context) {
-    return [];
-  }
-
-  @override
-  Widget? buildLeading(
-      BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        close(context, null);
-      },
-      icon: const Icon(Icons.arrow_back),
-    );
-  }
-
-  @override
-  Widget buildResults(
-      BuildContext context) {
-    final results = items.where((item) {
-      return item[keyName]!
-          .toLowerCase()
-          .contains(query.toLowerCase());
-    }).toList();
-
-    return ListView(
-      children: results.map((item) {
-        return ListTile(
-          title: Text(item[keyName]!),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => SurahDetailPage(
-                  surahName: item[keyName]!,
-                ),
-              ),
-            );
-          },
-        );
-      }).toList(),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(
-      BuildContext context) {
-    return buildResults(context);
   }
 }

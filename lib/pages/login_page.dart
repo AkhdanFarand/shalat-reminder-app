@@ -52,9 +52,9 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         print("LOGIN SUCCESS");
-        print(await prefs.getBool("isLogin"));
-        print(await prefs.getString("full_name"));
-        print(await prefs.getString("email"));
+        print(prefs.getBool("isLogin"));
+        print(prefs.getString("full_name"));
+        print(prefs.getString("email"));
 
         Navigator.pushAndRemoveUntil(
           context,
