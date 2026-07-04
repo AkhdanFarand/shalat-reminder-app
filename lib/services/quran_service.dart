@@ -47,14 +47,10 @@ class QuranService {
 
         verses.add(
           VerseModel(
-            number:
-                arab[i]["numberInSurah"],
-
-            arab:
-                arab[i]["text"],
-
-            translation:
-                indo[i]["text"],
+            number: arab[i]["numberInSurah"],
+            arab: arab[i]["text"],
+            translation: indo[i]["text"],
+            audio: arab[i]["audio"] ?? "",
           ),
         );
       }
